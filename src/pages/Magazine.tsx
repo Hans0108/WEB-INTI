@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { contentData } from '../data';
+import { useStore } from '../store';
 
 const filters = ['All', 'Newsletters', 'Articles', 'Upcoming Events'];
 
 export default function Magazine() {
   const [activeFilter, setActiveFilter] = useState('All');
+  const { articles: contentData } = useStore();
 
   const filteredContent = contentData.filter(item => activeFilter === 'All' || item.type === activeFilter);
   const featured = contentData.find(item => item.featured);
@@ -19,8 +20,8 @@ export default function Magazine() {
       {/* Header */}
       <section className="py-16 bg-white border-b border-luxury-gold/20 tech-grid shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-4">DATA HUB</h4>
-          <h1 className="text-4xl md:text-6xl font-heading font-bold text-[#1a1a1a] mb-8 tracking-tighter uppercase">Query Archive</h1>
+          <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-4">INTI CHRONICLES</h4>
+          <h1 className="text-4xl md:text-6xl font-heading font-bold text-[#111111] mb-8 tracking-tighter uppercase">The Heritage Library</h1>
           
           {/* Global Filter Navigation */}
           <div className="flex flex-wrap gap-4 relative z-20 p-2 bg-[#FAFAFA] border border-luxury-gold/20 w-fit">
@@ -52,10 +53,10 @@ export default function Magazine() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-16 bg-white p-8 border border-luxury-gold/30 hover:border-imperial-red transition-colors flex flex-col md:flex-row gap-8 group block relative overflow-hidden shadow-sm"
+            className="mb-16 bg-white p-8 border border-luxury-gold/35 hover:border-imperial-red transition-all duration-500 flex flex-col md:flex-row gap-8 group block relative overflow-hidden shadow-sm rounded-2xl"
           >
-            <div className="absolute top-0 right-0 w-64 h-64 border-r-[40px] border-t-[40px] border-imperial-red/5 rounded-tr-[40px] pointer-events-none"></div>
-            <div className="flex-1 overflow-hidden relative cursor-pointer min-h-[300px] border border-luxury-gold/20 bg-gray-100">
+            <div className="absolute top-0 right-0 w-64 h-64 border-r-[40px] border-t-[40px] border-imperial-red/5 rounded-tr-2xl pointer-events-none"></div>
+            <div className="flex-1 overflow-hidden relative cursor-pointer min-h-[300px] border border-luxury-gold/20 bg-gray-100 rounded-xl">
               <div className="absolute inset-0">
                 <img src={featured.img} alt={featured.title} className="w-full h-full object-cover grayscale mix-blend-luminosity opacity-80 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
               </div>
@@ -68,10 +69,10 @@ export default function Magazine() {
             
             <div className="flex-1 flex flex-col justify-center relative z-10">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-gray-400">Featured Log</h3>
+                <h3 className="text-[10px] uppercase tracking-[0.2em] font-mono font-bold text-gray-400">Featured Chronicle</h3>
               </div>
               <p className="text-sm border-l-2 border-imperial-red pl-4 md:text-base text-gray-600 font-mono tracking-wide leading-relaxed mb-8">
-                Retrieving detailed analysis on how {featured.title.toLowerCase()} is shaping the cultural narrative and modern sequence of Indonesia.
+                Exploring how {featured.title.toLowerCase()} is shaping the cultural narrative, preservation of community values, and social sequence of Indonesia.
               </p>
               
               <div className="flex items-center text-gray-500 font-mono space-x-6 mb-8 text-[10px] font-bold uppercase tracking-widest">
@@ -95,7 +96,7 @@ export default function Magazine() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
-                className="bg-white overflow-hidden border border-luxury-gold/30 hover:border-imperial-red hover:shadow-lg group transition-all duration-300 flex flex-col shadow-sm"
+                className="bg-white overflow-hidden border border-luxury-gold/30 hover:border-imperial-red hover:shadow-lg group transition-all duration-300 flex flex-col shadow-sm rounded-xl"
               >
                 <div className="relative h-60 overflow-hidden border-b border-luxury-gold/20">
                   <img src={item.img} alt={item.title} className="w-full h-full object-cover grayscale opacity-90 transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100" />
@@ -104,7 +105,7 @@ export default function Magazine() {
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-grow relative">
-                  <h3 className="text-lg md:text-xl font-heading font-bold text-[#1a1a1a] mb-4 uppercase tracking-tight leading-tight group-hover:text-imperial-red transition-colors">{item.title}</h3>
+                  <h3 className="text-lg md:text-xl font-heading font-bold text-[#111111] mb-4 uppercase tracking-tight leading-tight group-hover:text-imperial-red transition-colors">{item.title}</h3>
                   <div className="mt-auto pt-6 border-t border-luxury-gold/20 flex items-center justify-between">
                     <div className="text-[10px] font-bold font-mono tracking-widest uppercase text-gray-500">
                       {item.type === 'Upcoming Events' ? item.location : item.date}

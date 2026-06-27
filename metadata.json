@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "INTI Community Portal",
+  "description": "An interactive, futuristic portal for Perhimpunan Indonesia Tionghoa (INTI) featuring real-time blog archives, newsletters, scheduled event trackers, leadership directory controls, and dynamic media management.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

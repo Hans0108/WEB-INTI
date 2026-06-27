@@ -2,12 +2,13 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react';
-import { contentData } from '../data';
+import { useStore } from '../store';
 import Markdown from 'react-markdown';
 
 export default function ArticleView() {
   const { id } = useParams<{ id: string }>();
-  const article = contentData.find(item => item.id === Number(id));
+  const { articles } = useStore();
+  const article = articles.find(item => item.id === Number(id));
 
   if (!article) {
     return (

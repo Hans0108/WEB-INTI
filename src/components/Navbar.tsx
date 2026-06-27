@@ -11,15 +11,23 @@ export default function Navbar() {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-imperial-red/10"
+      className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-luxury-gold/20 shadow-[0_2px_20px_-10px_rgba(0,0,0,0.05)]"
     >
+      {/* Red accent line at the very top of the nav */}
+      <div className="h-[3px] w-full bg-gradient-to-r from-imperial-red via-luxury-gold to-imperial-red-dark"></div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center gap-4 group">
-            <IntiLogo className="w-12 h-12 shadow-sm rounded border border-imperial-red/20 group-hover:shadow-lg group-hover:border-imperial-red group-hover:scale-105 transition-all duration-300" />
-            <span className="font-heading font-bold text-2xl tracking-tighter text-[#1a1a1a] transition-colors duration-300">
-              INTI<span className="text-imperial-red animate-pulse">_</span>
-            </span>
+          <Link to="/" className="flex items-center gap-3.5 group">
+            <IntiLogo className="w-12 h-12 shadow-sm rounded border border-luxury-gold/30 group-hover:shadow-md group-hover:border-imperial-red group-hover:scale-105 transition-all duration-300" />
+            <div className="flex flex-col justify-center">
+              <span className="text-[10px] sm:text-[11.5px] font-heading font-extrabold tracking-[0.18em] text-[#111111] uppercase leading-none">
+                Perhimpunan
+              </span>
+              <span className="text-[10px] sm:text-[11.5px] font-heading font-extrabold tracking-[0.18em] text-[#111111] uppercase leading-none mt-1">
+                Indonesia Tionghoa
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Menu */}
@@ -28,9 +36,9 @@ export default function Navbar() {
             <NavLink to="/about">About Us</NavLink>
             <NavLink to="/magazine">Magazine</NavLink>
             <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 bg-imperial-red/10 text-imperial-red font-mono text-[10px] uppercase tracking-widest font-bold rounded border border-imperial-red/50 hover:bg-imperial-red hover:text-white hover:tech-glow transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-6 py-2.5 bg-[#111] hover:bg-imperial-red text-white font-mono text-[9px] uppercase tracking-widest font-bold border border-transparent hover:tech-glow hover:border-luxury-gold/30 transition-all duration-300 cursor-pointer"
             >
               SYS.JOIN()
             </motion.button>
@@ -50,12 +58,12 @@ export default function Navbar() {
         <motion.div 
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="md:hidden bg-white border-b border-imperial-red/10 px-4 pt-2 pb-6 space-y-4 shadow-xl"
+          className="md:hidden bg-white border-b border-luxury-gold/30 px-6 pt-4 pb-8 space-y-4 shadow-xl"
         >
           <MobileNavLink to="/" onClick={() => setIsOpen(false)}>Home</MobileNavLink>
           <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>About Us</MobileNavLink>
           <MobileNavLink to="/magazine" onClick={() => setIsOpen(false)}>Magazine</MobileNavLink>
-          <button className="w-full px-6 py-3 bg-imperial-red/10 text-imperial-red font-mono text-[10px] uppercase tracking-widest font-bold rounded border border-imperial-red/50 hover:bg-imperial-red hover:text-white transition-all mt-4">
+          <button className="w-full px-6 py-3 bg-[#111] text-white font-mono text-[10px] uppercase tracking-widest font-bold border border-luxury-gold/30 hover:bg-imperial-red transition-all mt-4 cursor-pointer">
             SYS.JOIN()
           </button>
         </motion.div>

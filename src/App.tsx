@@ -5,11 +5,14 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Magazine from './pages/Magazine';
 import ArticleView from './pages/ArticleView';
+import Admin from './pages/Admin';
+import ScrollProgress from './components/ScrollProgress';
 
 export default function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-off-white">
+        <ScrollProgress />
         <Navbar />
         <main className="flex-grow pt-20">
           <Routes>
@@ -17,6 +20,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/magazine" element={<Magazine />} />
             <Route path="/magazine/article/:id" element={<ArticleView />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
         <Footer />

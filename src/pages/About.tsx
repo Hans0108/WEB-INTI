@@ -2,15 +2,11 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Linkedin, Twitter } from 'lucide-react';
 import IntiLogo from '../components/IntiLogo';
-
-const leaders = [
-  { name: 'Budi Santoso', role: 'Chairman', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { name: 'Diana Wijaya', role: 'Vice Chariman', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { name: 'Hendrik Salim', role: 'Secretary General', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
-  { name: 'Linda Tan', role: 'Head of Social Welfare', img: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }
-];
+import { useStore } from '../store';
 
 export default function About() {
+  const { leaders, websiteImages } = useStore();
+
   return (
     <div className="pt-20 bg-white min-h-screen">
       {/* Header */}
@@ -25,12 +21,12 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, type: "spring" }}
           >
-            <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-6">SYS.OVERVIEW</h4>
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-[#1a1a1a] mb-6 tracking-tighter uppercase">
-              The Architecture <span className="text-imperial-red">Of INTI_</span>
+            <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-6">OUR ESSENCE</h4>
+            <h1 className="text-5xl md:text-7xl font-heading font-bold text-[#111111] mb-6 tracking-tighter uppercase">
+              Preserving Heritage, <span className="text-imperial-gradient">Building Harmony</span>
             </h1>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-gray-500 max-w-2xl mx-auto leading-relaxed border-t border-luxury-gold/30 pt-8">
-              System logic connecting structural heritage with the progressive network of Indonesia.
+              A community united to foster social cohesion, cultural preservation, and national progress.
             </p>
           </motion.div>
         </div>
@@ -49,7 +45,7 @@ export default function About() {
             >
               <div className="absolute inset-0 bg-luxury-gold/10 border border-luxury-gold/50 translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-500"></div>
               <img 
-                src="https://images.unsplash.com/photo-1572949645841-094f3a9c4c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                src={websiteImages.aboutCommunityImg} 
                 alt="Community Gathering" 
                 className="relative shadow-lg object-cover h-[500px] w-full filter grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 border border-luxury-gold/20"
               />
@@ -66,9 +62,9 @@ export default function About() {
               className="lg:w-1/2"
             >
               <h4 className="text-imperial-red font-mono font-bold uppercase tracking-[0.3em] text-[10px] mb-4 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-imperial-red"></span> PHILOSOPHY_PROTOCOL
+                <span className="w-1.5 h-1.5 bg-imperial-red"></span> NOBLE PHILOSOPHY
               </h4>
-              <h2 className="text-3xl md:text-5xl font-heading font-bold text-[#1a1a1a] mb-8 tracking-tight uppercase">Harmoni dalam<br/>Keberagaman</h2>
+              <h2 className="text-3xl md:text-5xl font-heading font-bold text-[#111111] mb-8 tracking-tight uppercase">Harmoni dalam<br/>Keberagaman</h2>
               <div className="space-y-6 text-gray-500 font-mono text-xs uppercase tracking-widest leading-relaxed border-l-2 border-imperial-red pl-6">
                 <p>
                   At INTI, we believe that true strength lies in our diversity. We embrace our Chinese-Indonesian roots not as a separate entity, but as an integral thread woven tightly into the beautiful tapestry that is Indonesia.
@@ -88,35 +84,41 @@ export default function About() {
           <div className="flex flex-col items-center mb-16 text-center">
             <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-2 flex items-center gap-2">
               <span className="w-1 h-4 bg-luxury-gold-dark"></span>
-              NODE_OPERATORS
+              OUR LEADERSHIP
             </h4>
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-[#1a1a1a] mb-4 uppercase tracking-tighter">Command Line</h2>
+            <h2 className="text-3xl md:text-5xl font-heading font-bold text-[#111111] mb-4 uppercase tracking-tighter">THE COUNCIL OF TRUSTEES</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {leaders.map((leader, i) => (
-              <LeaderCard key={i} leader={leader} delay={i * 0.1} />
+              <LeaderCard key={leader.id} leader={leader} delay={i * 0.1} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Manifesto */}
-      <section className="py-32 bg-imperial-red relative overflow-hidden text-white tech-grid">
+      <section className="py-32 bg-gradient-to-br from-imperial-red-dark via-imperial-red to-[#5c0003] relative overflow-hidden text-white tech-grid">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, type: "spring" }}
-            className="border border-luxury-gold/50 p-12 bg-black/10 backdrop-blur-sm tech-glow-gold shadow-2xl"
+            className="border border-luxury-gold/50 p-12 bg-black/40 backdrop-blur-sm tech-glow-gold shadow-2xl relative"
           >
+            {/* Fine decorative corners */}
+            <div className="absolute top-3 left-3 w-5 h-5 border-t border-l border-luxury-gold/40"></div>
+            <div className="absolute top-3 right-3 w-5 h-5 border-t border-r border-luxury-gold/40"></div>
+            <div className="absolute bottom-3 left-3 w-5 h-5 border-b border-l border-luxury-gold/40"></div>
+            <div className="absolute bottom-3 right-3 w-5 h-5 border-b border-r border-luxury-gold/40"></div>
+
             <h3 className="text-2xl md:text-4xl font-heading font-bold text-white uppercase tracking-tight mb-8">
-              We are the bridge of harmony, <br/>rooted in <span className="text-luxury-gold">heritage</span>, <br/>entirely devoted to Indonesia.
+              We are the bridge of harmony, <br/>rooted in <span className="text-luxury-gold font-medium">heritage</span>, <br/>entirely devoted to Indonesia.
             </h3>
             <p className="text-[10px] text-luxury-gold/80 font-mono uppercase tracking-[0.4em] font-bold flex items-center justify-center gap-4">
               <span className="w-8 h-[1px] bg-luxury-gold/30"></span>
-              SYS.MANIFESTO
+              OUR SOLEMN PLEDGE
               <span className="w-8 h-[1px] bg-luxury-gold/30"></span>
             </p>
           </motion.div>
