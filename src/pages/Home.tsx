@@ -4,6 +4,7 @@ import { ArrowRight, Users, Calendar, Heart } from 'lucide-react';
 import IntiLogo from '../components/IntiLogo';
 import MagazineCarousel from '../components/MagazineCarousel';
 import InteractiveBackground from '../components/InteractiveBackground';
+import AnimatedHeroLogo from '../components/AnimatedHeroLogo';
 
 import { useStore } from '../store';
 
@@ -114,59 +115,79 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/95 to-transparent z-0 pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full pt-20">
-          <motion.div 
-            className="max-w-3xl"
-            variants={heroContainerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={heroChildVariants}>
-              <h4 className="flex items-center gap-3 text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-xs mb-6">
-                <span className="w-2 h-2 bg-imperial-red animate-pulse tech-glow rounded-full"></span>
-                SYS.INIT // 1999
-              </h4>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Column: Text & CTAs */}
+            <div className="lg:col-span-7">
+              <motion.div 
+                className="max-w-3xl"
+                variants={heroContainerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <motion.div variants={heroChildVariants}>
+                  <h4 className="flex items-center gap-3 text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-xs mb-6">
+                    <span className="w-2 h-2 bg-imperial-red animate-pulse tech-glow rounded-full"></span>
+                    SYS.INIT // 1999
+                  </h4>
+                </motion.div>
 
-            <motion.div variants={heroChildVariants}>
-              <h1 className="text-6xl md:text-8xl font-heading font-bold text-[#111111] leading-[0.95] mb-6 tracking-tighter uppercase">
-                Bridging <br/>
-                <span className="text-imperial-gradient relative inline-block group">
-                  Cultures
-                  <span className="absolute left-0 bottom-1 w-full h-[3px] bg-imperial-red scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                </span>
-                <span className="text-imperial-red animate-pulse">_</span><br />
-                <span className="text-luxury-gold-gradient font-light">Building Harmony</span>
-              </h1>
-            </motion.div>
-            
-            <motion.p 
-              variants={heroChildVariants}
-              className="font-mono text-[11px] text-gray-500 mb-10 max-w-2xl leading-relaxed uppercase tracking-[0.2em]"
-            >
-              Perhimpunan Indonesia Tionghoa (INTI) is dedicated to fostering unity, preserving cultural heritage, and contributing to the advancement of the Indonesian nation through inclusivity and compassion.
-            </motion.p>
-            
+                <motion.div variants={heroChildVariants}>
+                  <h1 className="text-6xl md:text-8xl font-heading font-bold text-[#111111] leading-[0.95] mb-6 tracking-tighter uppercase">
+                    Bridging <br/>
+                    <span className="text-imperial-gradient relative inline-block group">
+                      Cultures
+                      <span className="absolute left-0 bottom-1 w-full h-[3px] bg-imperial-red scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                    </span>
+                    <span className="text-imperial-red animate-pulse">_</span><br />
+                    <span className="text-luxury-gold-gradient font-light">Building Harmony</span>
+                  </h1>
+                </motion.div>
+                
+                <motion.p 
+                  variants={heroChildVariants}
+                  className="font-mono text-[11px] text-gray-500 mb-10 max-w-2xl leading-relaxed uppercase tracking-[0.2em]"
+                >
+                  Perhimpunan Indonesia Tionghoa (INTI) is dedicated to fostering unity, preserving cultural heritage, and contributing to the advancement of the Indonesian nation through inclusivity and compassion.
+                </motion.p>
+                
+                <motion.div 
+                  variants={heroChildVariants}
+                  className="flex flex-wrap gap-4 relative z-20"
+                >
+                  <motion.button 
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="bg-[#111111] hover:bg-imperial-red text-white px-8 py-4 text-[10px] font-mono font-bold uppercase tracking-[0.3em] border border-transparent hover:tech-glow transition-all duration-300 flex items-center group cursor-pointer"
+                  >
+                    Discover_Story
+                    <ArrowRight className="ml-3 group-hover:translate-x-1.5 transition-transform" size={14} />
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="bg-transparent text-[#111111] border border-[#111111]/30 hover:border-luxury-gold hover:text-luxury-gold-dark px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] transition-colors duration-300 cursor-pointer"
+                  >
+                    Join_Network
+                  </motion.button>
+                </motion.div>
+              </motion.div>
+            </div>
+
+            {/* Right Column: Super Fancy Animated Logo */}
             <motion.div 
-              variants={heroChildVariants}
-              className="flex flex-wrap gap-4 relative z-20"
+              className="lg:col-span-5 flex justify-center items-center relative z-20"
+              initial={{ opacity: 0, scale: 0.75, rotate: -8 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ 
+                type: 'spring', 
+                stiffness: 75, 
+                damping: 18,
+                delay: 0.55
+              }}
             >
-              <motion.button 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-[#111111] hover:bg-imperial-red text-white px-8 py-4 text-[10px] font-mono font-bold uppercase tracking-[0.3em] border border-transparent hover:tech-glow transition-all duration-300 flex items-center group cursor-pointer"
-              >
-                Discover_Story
-                <ArrowRight className="ml-3 group-hover:translate-x-1.5 transition-transform" size={14} />
-              </motion.button>
-              <motion.button 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-transparent text-[#111111] border border-[#111111]/30 hover:border-luxury-gold hover:text-luxury-gold-dark px-8 py-4 font-mono text-[10px] font-bold uppercase tracking-[0.3em] transition-colors duration-300 cursor-pointer"
-              >
-                Join_Network
-              </motion.button>
+              <AnimatedHeroLogo />
             </motion.div>
-          </motion.div>
+          </div>
         </div>
         
         {/* Futuristic elements */}
