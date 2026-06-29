@@ -111,7 +111,7 @@ const LeaderCard: React.FC<{ leader: any, delay: number }> = ({ leader, delay })
     >
       <div className="aspect-[3/4] overflow-hidden relative">
         <img 
-          src={leader.img} 
+          src={leader.img || undefined} 
           alt={leader.name} 
           className="w-full h-full object-cover filter grayscale opacity-90 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
         />

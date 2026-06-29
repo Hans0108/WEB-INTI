@@ -7,11 +7,13 @@ import Magazine from './pages/Magazine';
 import ArticleView from './pages/ArticleView';
 import Admin from './pages/Admin';
 import ScrollProgress from './components/ScrollProgress';
+import CustomCursor from './components/CustomCursor';
 
 export default function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen bg-off-white">
+        <CustomCursor />
         <ScrollProgress />
         <Navbar />
         <main className="flex-grow pt-20">

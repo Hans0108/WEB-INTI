@@ -127,7 +127,7 @@ export default function MagazineCarousel() {
                     {/* Article Cover Image with Grayscale to Color Reveal */}
                     <div className="h-48 overflow-hidden relative border-b border-luxury-gold/15 bg-gray-100">
                       <img
-                        src={item.img}
+                        src={item.img || undefined}
                         alt={item.title}
                         className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                         referrerPolicy="no-referrer"

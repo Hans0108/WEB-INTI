@@ -101,7 +101,7 @@ export default function Home() {
         {websiteImages.showHomeHeroImg && websiteImages.homeHeroImg && (
           <div className="absolute inset-0 z-0 pointer-events-none">
             <img 
-              src={websiteImages.homeHeroImg} 
+              src={websiteImages.homeHeroImg || undefined} 
               alt="Hero Background" 
               className="w-full h-full object-cover filter grayscale opacity-[0.06] mix-blend-luminosity"
             />

@@ -58,7 +58,7 @@ export default function Magazine() {
             <div className="absolute top-0 right-0 w-64 h-64 border-r-[40px] border-t-[40px] border-imperial-red/5 rounded-tr-2xl pointer-events-none"></div>
             <div className="flex-1 overflow-hidden relative cursor-pointer min-h-[300px] border border-luxury-gold/20 bg-gray-100 rounded-xl">
               <div className="absolute inset-0">
-                <img src={featured.img} alt={featured.title} className="w-full h-full object-cover grayscale mix-blend-luminosity opacity-80 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
+                <img src={featured.img || undefined} alt={featured.title} className="w-full h-full object-cover grayscale mix-blend-luminosity opacity-80 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-1000" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
               <div className="absolute bottom-6 left-6 right-6">
@@ -99,7 +99,7 @@ export default function Magazine() {
                 className="bg-white overflow-hidden border border-luxury-gold/30 hover:border-imperial-red hover:shadow-lg group transition-all duration-300 flex flex-col shadow-sm rounded-xl"
               >
                 <div className="relative h-60 overflow-hidden border-b border-luxury-gold/20">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-cover grayscale opacity-90 transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100" />
+                  <img src={item.img || undefined} alt={item.title} className="w-full h-full object-cover grayscale opacity-90 transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0 group-hover:opacity-100" />
                   <div className="absolute top-4 right-4">
                     <Badge type={item.type} />
                   </div>

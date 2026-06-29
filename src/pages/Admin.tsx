@@ -556,7 +556,7 @@ export default function Admin() {
                             className="group relative h-10 overflow-hidden border border-luxury-gold/20 hover:border-imperial-red transition-all"
                             title={preset.name}
                           >
-                            <img src={preset.url} className="w-full h-full object-cover filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="preset" />
+                            <img src={preset.url || undefined} className="w-full h-full object-cover filter grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="preset" />
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent" />
                           </button>
                         ))}
@@ -608,7 +608,7 @@ export default function Admin() {
                       >
                         <div className="flex gap-4 items-center overflow-hidden">
                           <div className="w-12 h-12 shrink-0 border border-luxury-gold/20 overflow-hidden relative">
-                            <img src={item.img} alt="" className="w-full h-full object-cover grayscale" />
+                            <img src={item.img || undefined} alt="" className="w-full h-full object-cover grayscale" />
                           </div>
                           <div className="overflow-hidden">
                             <span className="text-[8px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 border border-imperial-red/30 bg-imperial-red/5 text-imperial-red w-fit inline-block mb-1">
@@ -712,7 +712,7 @@ export default function Admin() {
                     </div>
                   </div>
                   <div className="md:col-span-4 border border-luxury-gold/20 h-32 overflow-hidden relative shadow-sm bg-gray-100">
-                    <img src={aboutCommunityImg} className="w-full h-full object-cover filter grayscale" alt="About Main View" />
+                    <img src={aboutCommunityImg || undefined} className="w-full h-full object-cover filter grayscale" alt="About Main View" />
                     <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-0.5 text-[8px] text-white">LIVE_PREVIEW</div>
                   </div>
                 </div>
@@ -759,7 +759,7 @@ export default function Admin() {
                   <div className={`md:col-span-4 border border-luxury-gold/20 h-32 overflow-hidden relative shadow-sm bg-gray-100 ${!showHomeHeroImg ? 'opacity-40' : ''}`}>
                     {showHomeHeroImg && homeHeroImg ? (
                       <>
-                        <img src={homeHeroImg} className="w-full h-full object-cover filter grayscale" alt="Home Hero Preview" />
+                        <img src={homeHeroImg || undefined} className="w-full h-full object-cover filter grayscale" alt="Home Hero Preview" />
                         <div className="absolute bottom-2 right-2 bg-black/60 px-2 py-0.5 text-[8px] text-white">LIVE_PREVIEW</div>
                       </>
                     ) : (
@@ -911,7 +911,7 @@ function LeaderNodeEditor({ leader, onSave }: { leader: Leader, onSave: (name: s
       
       <div className="flex gap-4 items-center">
         <div className="w-16 h-16 border border-luxury-gold/20 overflow-hidden shrink-0 shadow-sm relative bg-gray-100">
-          <img src={img} className="w-full h-full object-cover filter grayscale" alt="" />
+          <img src={img || undefined} className="w-full h-full object-cover filter grayscale" alt="" />
         </div>
         <div className="w-full">
           <label className="block text-[8px] uppercase tracking-widest text-gray-400 mb-1 font-bold">Node Name</label>

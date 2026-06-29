@@ -29,7 +29,7 @@ export default function ArticleView() {
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] border-b border-luxury-gold/20 overflow-hidden bg-gray-100">
         <div className="absolute inset-0">
-          <img src={article.img} alt={article.title} className="w-full h-full object-cover filter grayscale mix-blend-luminosity opacity-80" />
+          <img src={article.img || undefined} alt={article.title} className="w-full h-full object-cover filter grayscale mix-blend-luminosity opacity-80" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
         <div className="absolute bottom-0 left-0 right-0 p-8">

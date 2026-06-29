@@ -14,6 +14,10 @@
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 }
 
+* {
+  cursor: none !important;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-off-white);
