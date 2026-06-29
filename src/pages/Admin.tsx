@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Plus, Trash2, Image as ImageIcon, Sparkles, RefreshCw, 
   Check, Save, ArrowLeft, Eye, Edit2, AlertCircle, Calendar, MapPin, Clock, FileText, ToggleLeft, ToggleRight,
-  Lock, User, ShieldCheck, LogIn, LogOut
+  Lock, User, ShieldCheck, LogIn, LogOut, Download, Upload
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore, Leader, store } from '../store';
@@ -22,8 +22,10 @@ const IMAGE_PRESETS = [
 export default function Admin() {
   const { 
     articles, leaders, websiteImages, 
-    addArticle, deleteArticle, updateLeaderDetails, updateWebsiteImages, resetToDefault 
+    addArticle, deleteArticle, updateArticle, updateLeaderDetails, updateWebsiteImages, resetToDefault 
   } = useStore();
+
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   // Authentication states
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -71,6 +73,67 @@ export default function Admin() {
   const [showHomeHeroImg, setShowHomeHeroImg] = useState(websiteImages.showHomeHeroImg);
   const [leaderStates, setLeaderStates] = useState<Leader[]>(leaders);
 
+  const importInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleExportBackup = () => {
+    try {
+      const dataStr = JSON.stringify({
+        articles,
+        leaders,
+        websiteImages,
+        exportedAt: new Date().toISOString(),
+        version: "1.0.0"
+      }, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `inti_portal_backup_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      setFormSuccessMsg('System database backup downloaded successfully!');
+      setTimeout(() => setFormSuccessMsg(''), 4000);
+    } catch (e) {
+      setFormErrorMsg('Failed to export system backup.');
+      setTimeout(() => setFormErrorMsg(''), 4000);
+    }
+  };
+
+  const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target?.result as string);
+        if (data.articles && Array.isArray(data.articles) && data.leaders && data.websiteImages) {
+          store.saveArticles(data.articles);
+          store.saveLeaders(data.leaders);
+          store.saveWebsiteImages(data.websiteImages);
+          
+          // Sync current page component states
+          setAboutCommunityImg(data.websiteImages.aboutCommunityImg);
+          setHomeHeroImg(data.websiteImages.homeHeroImg || '');
+          setShowHomeHeroImg(data.websiteImages.showHomeHeroImg);
+          setLeaderStates(data.leaders);
+          setEditingId(null);
+
+          setFormSuccessMsg('System restored and synchronized from backup successfully!');
+          setTimeout(() => setFormSuccessMsg(''), 5000);
+        } else {
+          alert('Invalid backup file structure. The selected JSON file does not contain valid INTI Portal system database records.');
+        }
+      } catch (error) {
+        alert('Error parsing backup file. Please ensure it is a valid, uncorrupted backup file.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ''; // Reset file input
+  };
+
   const handleCreateArticle = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSuccessMsg('');
@@ -87,7 +150,7 @@ export default function Admin() {
       year: 'numeric'
     });
 
-    const newArt: Omit<ContentItem, 'id'> = {
+    const articleData: Partial<ContentItem> = {
       type: formType,
       title: formTitle,
       img: formImg,
@@ -97,12 +160,21 @@ export default function Admin() {
     };
 
     if (formType === 'Upcoming Events') {
-      newArt.location = formLocation.trim() || 'Jakarta, Indonesia';
+      articleData.location = formLocation.trim() || 'Jakarta, Indonesia';
+      articleData.readTime = undefined;
     } else {
-      newArt.readTime = formReadTime.trim() || '5 min read';
+      articleData.readTime = formReadTime.trim() || '5 min read';
+      articleData.location = undefined;
     }
 
-    addArticle(newArt);
+    if (editingId !== null) {
+      updateArticle(editingId, articleData);
+      setFormSuccessMsg('Article updated successfully!');
+      setEditingId(null);
+    } else {
+      addArticle(articleData as Omit<ContentItem, 'id'>);
+      setFormSuccessMsg('Article posted successfully! Check the Archive page to see it live.');
+    }
     
     // Reset Form
     setFormTitle('');
@@ -113,7 +185,6 @@ export default function Admin() {
     setFormFeatured(false);
     setFormContent('');
     
-    setFormSuccessMsg('Article posted successfully! Check the Archive page to see it live.');
     setTimeout(() => setFormSuccessMsg(''), 5000);
   };
 
@@ -355,10 +426,30 @@ export default function Admin() {
             
             {/* Create Content Column */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="bg-white border border-luxury-gold/20 p-6 shadow-sm">
-                <h3 className="font-mono text-xs uppercase tracking-widest font-bold text-[#1a1a1a] mb-6 border-b border-luxury-gold/20 pb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-imperial-red"></span>
-                  UPLOAD_NEW_ARTICLE_OR_EVENT
+              <div id="content-form-section" className="bg-white border border-luxury-gold/20 p-6 shadow-sm">
+                <h3 className="font-mono text-xs uppercase tracking-widest font-bold text-[#1a1a1a] mb-6 border-b border-luxury-gold/20 pb-3 flex items-center justify-between gap-2">
+                  <span className="flex items-center gap-2">
+                    <span className={`w-2 h-2 ${editingId !== null ? 'bg-luxury-gold' : 'bg-imperial-red'}`}></span>
+                    {editingId !== null ? `EDIT_CONTENT_NODE // ID_0${editingId}` : 'UPLOAD_NEW_ARTICLE_OR_EVENT'}
+                  </span>
+                  {editingId !== null && (
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        setEditingId(null);
+                        setFormTitle('');
+                        setFormImg('');
+                        setFormDate('');
+                        setFormLocation('');
+                        setFormReadTime('');
+                        setFormFeatured(false);
+                        setFormContent('');
+                      }}
+                      className="px-2 py-1 text-[9px] font-bold text-gray-500 hover:text-imperial-red border border-gray-300 hover:border-imperial-red transition-all cursor-pointer"
+                    >
+                      CANCEL_EDIT
+                    </button>
+                  )}
                 </h3>
 
                 <form onSubmit={handleCreateArticle} className="space-y-4 font-mono text-xs">
@@ -489,7 +580,8 @@ export default function Admin() {
                     type="submit" 
                     className="w-full py-4 bg-imperial-red/10 text-imperial-red border border-imperial-red hover:bg-imperial-red hover:text-white hover:tech-glow font-mono font-bold uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-2"
                   >
-                    <Plus size={16} /> Execute_Upload()
+                    {editingId !== null ? <Save size={16} /> : <Plus size={16} />}
+                    {editingId !== null ? 'SAVE_CHANGES()' : 'Execute_Upload()'}
                   </button>
                 </form>
               </div>
@@ -529,19 +621,50 @@ export default function Admin() {
                           </div>
                         </div>
 
-                        <button 
-                          onClick={() => {
-                            if (confirm(`Are you sure you want to delete this content item: "${item.title}"?`)) {
-                              deleteArticle(item.id);
-                              setFormSuccessMsg(`Deleted content node: "${item.title}"`);
-                              setTimeout(() => setFormSuccessMsg(''), 3000);
-                            }
-                          }}
-                          className="w-8 h-8 rounded border border-rose-200 text-rose-500 hover:bg-rose-500 hover:border-rose-500 hover:text-white flex items-center justify-center shrink-0 cursor-pointer transition-all duration-300"
-                          title="Delete content record"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        <div className="flex gap-2 shrink-0">
+                          <button 
+                            onClick={() => {
+                              setEditingId(item.id);
+                              setFormType(item.type);
+                              setFormTitle(item.title);
+                              setFormImg(item.img);
+                              setFormDate(item.date);
+                              setFormLocation(item.location || '');
+                              setFormReadTime(item.readTime || '');
+                              setFormFeatured(!!item.featured);
+                              setFormContent(item.content);
+                              document.getElementById('content-form-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }}
+                            className="w-8 h-8 rounded border border-luxury-gold/30 text-luxury-gold-dark hover:bg-luxury-gold hover:border-luxury-gold hover:text-white flex items-center justify-center shrink-0 cursor-pointer transition-all duration-300"
+                            title="Edit content record"
+                          >
+                            <Edit2 size={13} />
+                          </button>
+
+                          <button 
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete this content item: "${item.title}"?`)) {
+                                if (editingId === item.id) {
+                                  setEditingId(null);
+                                  setFormTitle('');
+                                  setFormImg('');
+                                  setFormDate('');
+                                  setFormLocation('');
+                                  setFormReadTime('');
+                                  setFormFeatured(false);
+                                  setFormContent('');
+                                }
+                                deleteArticle(item.id);
+                                setFormSuccessMsg(`Deleted content node: "${item.title}"`);
+                                setTimeout(() => setFormSuccessMsg(''), 3000);
+                              }
+                            }}
+                            className="w-8 h-8 rounded border border-rose-200 text-rose-500 hover:bg-rose-500 hover:border-rose-500 hover:text-white flex items-center justify-center shrink-0 cursor-pointer transition-all duration-300"
+                            title="Delete content record"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -687,7 +810,7 @@ export default function Admin() {
 
             <div className="font-mono text-xs max-w-2xl space-y-6">
               <p className="text-gray-500 leading-relaxed uppercase tracking-wider text-[10px]">
-                The INTI portal system state relies on local-first secure variables in localStorage to support immediate, responsive changes within the container architecture. You can rollback or clear memory variables here to restore default states.
+                The INTI portal system state relies on local-first secure variables in localStorage to support immediate, responsive changes within the container architecture. You can manage backups here to prevent accidental data loss.
               </p>
 
               <div className="bg-black text-[#00FF00] p-4 font-mono text-[11px] leading-relaxed rounded border border-[#333] shadow-inner">
@@ -696,6 +819,43 @@ export default function Admin() {
                 <p>&gt; sys.articles_count::{articles.length} records in pipeline</p>
                 <p>&gt; sys.leadership_nodes::{leaders.length} live configurations</p>
                 <p>&gt; sys.integrity::OK // All checksum variables matching</p>
+              </div>
+
+              {/* Data Backup & Restore Panel */}
+              <div className="p-4 border border-luxury-gold/20 bg-gray-50/50 space-y-4">
+                <h4 className="font-bold text-[#1a1a1a] uppercase tracking-wider text-[11px] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-luxury-gold"></span> DATA_PRESERVATION_&_BACKUPS
+                </h4>
+                <p className="text-gray-500 text-[10px] leading-relaxed uppercase">
+                  Download a physical copy of all your blogs, events, custom images, and leadership data. You can restore this backup at any time or on another device.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  {/* Export Button */}
+                  <button
+                    onClick={handleExportBackup}
+                    className="py-3 px-4 bg-white border border-luxury-gold hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-sm text-[10px]"
+                  >
+                    <Download size={13} /> EXPORT_PORTAL_DATA()
+                  </button>
+
+                  {/* Import Button */}
+                  <div>
+                    <input 
+                      type="file" 
+                      ref={importInputRef} 
+                      accept=".json" 
+                      onChange={handleImportBackup} 
+                      className="hidden" 
+                    />
+                    <button
+                      onClick={() => importInputRef.current?.click()}
+                      className="w-full py-3 px-4 bg-white border border-luxury-gold hover:bg-[#1a1a1a] hover:text-white hover:border-[#1a1a1a] transition-all font-bold uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-sm text-[10px]"
+                    >
+                      <Upload size={13} /> IMPORT_PORTAL_DATA()
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="pt-6 border-t border-luxury-gold/20">

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Linkedin, Twitter } from 'lucide-react';
 import IntiLogo from '../components/IntiLogo';
+import AnimatedHeroLogo from '../components/AnimatedHeroLogo';
 import { useStore } from '../store';
 
 export default function About() {
@@ -9,49 +10,20 @@ export default function About() {
 
   return (
     <div className="pt-20 bg-white min-h-screen">
-      {/* Header */}
-      <section className="relative py-24 bg-white overflow-hidden tech-grid border-b border-luxury-gold/20">
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-          <IntiLogo className="w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] opacity-10" />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, type: "spring" }}
-          >
-            <h4 className="text-imperial-red font-mono uppercase tracking-[0.4em] font-bold text-[10px] mb-6">OUR ESSENCE</h4>
-            <h1 className="text-5xl md:text-7xl font-heading font-bold text-[#111111] mb-6 tracking-tighter uppercase">
-              Preserving Heritage, <span className="text-imperial-gradient">Building Harmony</span>
-            </h1>
-            <p className="text-xs font-mono uppercase tracking-[0.2em] text-gray-500 max-w-2xl mx-auto leading-relaxed border-t border-luxury-gold/30 pt-8">
-              A community united to foster social cohesion, cultural preservation, and national progress.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+
 
       {/* Mission & Philosophy */}
       <section className="py-24 bg-[#FAFAFA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, scale: 0.9, rotate: -4 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, type: "spring" }}
-              className="lg:w-1/2 relative group"
+              transition={{ duration: 0.8, type: "spring", stiffness: 90, damping: 15 }}
+              className="lg:w-1/2 flex justify-center items-center relative z-20"
             >
-              <div className="absolute inset-0 bg-luxury-gold/10 border border-luxury-gold/50 translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-500"></div>
-              <img 
-                src={websiteImages.aboutCommunityImg} 
-                alt="Community Gathering" 
-                className="relative shadow-lg object-cover h-[500px] w-full filter grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 border border-luxury-gold/20"
-              />
-              {/* Tech corner accents */}
-              <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-imperial-red z-10 group-hover:w-6 group-hover:h-6 transition-all duration-300"></div>
-              <div className="absolute -bottom-2 -right-2 w-4 h-4 border-b-2 border-r-2 border-imperial-red z-10 group-hover:w-6 group-hover:h-6 transition-all duration-300"></div>
+              <AnimatedHeroLogo />
             </motion.div>
             
             <motion.div 

@@ -75,6 +75,11 @@ export const store = {
     this.saveArticles(updated);
   },
 
+  updateArticle(id: number, updatedArticle: Partial<ContentItem>) {
+    const updated = articles.map(a => a.id === id ? { ...a, ...updatedArticle } : a);
+    this.saveArticles(updated);
+  },
+
   getLeaders() {
     return leaders;
   },
@@ -137,6 +142,7 @@ export function useStore() {
     websiteImages: state.websiteImages,
     addArticle: (art: Omit<ContentItem, 'id'>) => store.addArticle(art),
     deleteArticle: (id: number) => store.deleteArticle(id),
+    updateArticle: (id: number, updatedArt: Partial<ContentItem>) => store.updateArticle(id, updatedArt),
     updateLeaderImage: (id: number, img: string) => store.updateLeaderImage(id, img),
     updateLeaderDetails: (id: number, name: string, role: string, img: string) => store.updateLeaderDetails(id, name, role, img),
     updateWebsiteImages: (images: WebsiteImages) => store.saveWebsiteImages(images),
