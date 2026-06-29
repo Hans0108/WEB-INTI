@@ -119,16 +119,25 @@ export default function AnimatedHeroLogo() {
           rotateY,
           transformStyle: 'preserve-3d',
         }}
-        className="relative w-[78%] h-[78%] bg-[#111111] border border-luxury-gold/35 p-6 md:p-8 flex items-center justify-center shadow-2xl rounded-[20px] overflow-hidden group transition-all duration-300 hover:border-luxury-gold/75 hover:shadow-[0_25px_60px_rgba(184,134,11,0.22),_0_15px_40px_rgba(179,0,6,0.18)]"
+        className="relative w-[78%] h-[78%] bg-white/60 backdrop-blur-md border border-luxury-gold/45 p-6 md:p-8 flex items-center justify-center shadow-2xl rounded-[20px] overflow-hidden group transition-all duration-300 hover:border-luxury-gold hover:shadow-[0_25px_60px_rgba(212,175,55,0.25),_0_15px_40px_rgba(212,175,55,0.15)]"
       >
         {/* Subtle interior gold grid lines */}
-        <div className="absolute inset-0 tech-grid opacity-[0.25] pointer-events-none" />
+        <div 
+          className="absolute inset-0 pointer-events-none opacity-[0.55]" 
+          style={{
+            backgroundSize: '40px 40px',
+            backgroundImage: `
+              linear-gradient(to right, rgba(212, 175, 55, 0.12) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(212, 175, 55, 0.12) 1px, transparent 1px)
+            `
+          }}
+        />
         
         {/* Hover corner brackets */}
-        <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 border-luxury-gold/45 group-hover:border-imperial-red group-hover:scale-110 transition-all duration-500" />
-        <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 border-luxury-gold/45 group-hover:border-imperial-red group-hover:scale-110 transition-all duration-500" />
-        <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 border-luxury-gold/45 group-hover:border-imperial-red group-hover:scale-110 transition-all duration-500" />
-        <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 border-luxury-gold/45 group-hover:border-imperial-red group-hover:scale-110 transition-all duration-500" />
+        <div className="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 border-luxury-gold/60 group-hover:border-luxury-gold-dark group-hover:scale-110 transition-all duration-500" />
+        <div className="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 border-luxury-gold/60 group-hover:border-luxury-gold-dark group-hover:scale-110 transition-all duration-500" />
+        <div className="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 border-luxury-gold/60 group-hover:border-luxury-gold-dark group-hover:scale-110 transition-all duration-500" />
+        <div className="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 border-luxury-gold/60 group-hover:border-luxury-gold-dark group-hover:scale-110 transition-all duration-500" />
 
         {/* Floating Logo with TranslateZ Depth */}
         <motion.div
