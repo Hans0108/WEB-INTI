@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Plus, Trash2, Image as ImageIcon, Sparkles, RefreshCw, 
   Check, Save, ArrowLeft, Eye, Edit2, AlertCircle, Calendar, MapPin, Clock, FileText, ToggleLeft, ToggleRight,
-  Lock, User, ShieldCheck, LogIn, LogOut, Download, Upload
+  Lock, User, ShieldCheck, LogIn, LogOut, Download, Upload, Inbox, Phone
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore, Leader, store } from '../store';
@@ -21,8 +21,9 @@ const IMAGE_PRESETS = [
 
 export default function Admin() {
   const { 
-    articles, leaders, websiteImages, 
-    addArticle, deleteArticle, updateArticle, updateLeaderDetails, updateWebsiteImages, resetToDefault 
+    articles, leaders, websiteImages, inquiries,
+    addArticle, deleteArticle, updateArticle, updateLeaderDetails, updateWebsiteImages, resetToDefault,
+    markInquiryAsRead, markAllInquiriesAsRead, deleteInquiry
   } = useStore();
 
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -53,7 +54,7 @@ export default function Admin() {
     setPassword('');
   };
 
-  const [activeTab, setActiveTab] = useState<'content' | 'images' | 'system'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'images' | 'system' | 'inquiries'>('content');
 
   // New Content Form State
   const [formType, setFormType] = useState<string>('Articles');
@@ -414,10 +415,17 @@ export default function Admin() {
         </AnimatePresence>
 
         {/* Tab Navigation Controls */}
-        <div className="flex border-b border-luxury-gold/20 mb-8 bg-white shadow-sm p-1.5 gap-2">
+        <div className="flex border-b border-luxury-gold/20 mb-8 bg-white shadow-sm p-1.5 gap-2 overflow-x-auto">
           <TabButton active={activeTab === 'content'} onClick={() => setActiveTab('content')} icon={FileText} label="Content Pipeline" />
           <TabButton active={activeTab === 'images'} onClick={() => setActiveTab('images')} icon={ImageIcon} label="Visual Assets" />
           <TabButton active={activeTab === 'system'} onClick={() => setActiveTab('system')} icon={RefreshCw} label="System Matrix" />
+          <TabButton 
+            active={activeTab === 'inquiries'} 
+            onClick={() => setActiveTab('inquiries')} 
+            icon={Inbox} 
+            label="Enquiries" 
+            badgeCount={inquiries ? inquiries.filter(i => i.isNew).length : 0} 
+          />
         </div>
 
         {/* Content Pipeline View */}
@@ -870,17 +878,159 @@ export default function Admin() {
           </div>
         )}
 
+        {activeTab === 'inquiries' && (
+          <div className="bg-white border border-luxury-gold/20 p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-luxury-gold/20 pb-4">
+              <div>
+                <h3 className="font-mono text-xs uppercase tracking-widest font-bold text-[#1a1a1a] flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-imperial-red animate-pulse"></span>
+                  GUEST_MEMBERSHIP_ENQUIRIES // METRIC_DASHBOARD
+                </h3>
+                <p className="text-[10px] font-mono text-gray-500 uppercase tracking-wider mt-1">
+                  Manage membership inquiry applications and track prospective guest registrations
+                </p>
+              </div>
+              
+              {inquiries && inquiries.length > 0 && (
+                <div className="flex gap-2 w-full md:w-auto">
+                  <button
+                    onClick={() => {
+                      markAllInquiriesAsRead();
+                      setFormSuccessMsg('All inquiries marked as reviewed.');
+                      setTimeout(() => setFormSuccessMsg(''), 3000);
+                    }}
+                    className="flex-1 md:flex-none px-4 py-2 bg-white border border-luxury-gold/30 hover:border-imperial-red hover:text-imperial-red transition-all font-mono text-[9px] uppercase font-bold tracking-widest cursor-pointer"
+                  >
+                    MARK_ALL_REVIEWED()
+                  </button>
+                  <button
+                    onClick={() => {
+                      const dataStr = JSON.stringify(inquiries, null, 2);
+                      const blob = new Blob([dataStr], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.download = `inti_membership_inquiries_${new Date().toISOString().split('T')[0]}.json`;
+                      link.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="flex-grow md:flex-none px-4 py-2 bg-[#111] hover:bg-imperial-red text-white transition-all font-mono text-[9px] uppercase font-bold tracking-widest cursor-pointer animate-pulse"
+                  >
+                    EXPORT_INQUIRIES_JSON()
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {!inquiries || inquiries.length === 0 ? (
+              <div className="text-center py-16 border border-dashed border-luxury-gold/20 bg-off-white">
+                <Inbox size={48} className="mx-auto text-gray-300 mb-4 stroke-[1.5]" />
+                <h4 className="font-heading font-bold text-gray-800 text-sm uppercase tracking-wider mb-1">No Inquiries Found</h4>
+                <p className="text-xs font-mono text-gray-400 uppercase tracking-widest">Awaiting prospective guest registration submissions...</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {inquiries.map((inq) => (
+                  <motion.div
+                    key={inq.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`border border-luxury-gold/20 p-5 relative transition-all duration-300 hover:shadow-md ${
+                      inq.isNew ? 'bg-gradient-to-r from-imperial-red/[0.02] to-transparent border-l-4 border-l-imperial-red' : 'bg-white'
+                    }`}
+                  >
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                      
+                      {/* Left: Guest details */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-heading font-black text-sm text-[#111] tracking-wide uppercase">
+                            {inq.name}
+                          </span>
+                          
+                          {inq.isNew ? (
+                            <span className="bg-imperial-red text-white text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                              NEW
+                            </span>
+                          ) : (
+                            <span className="bg-gray-100 text-gray-600 text-[8px] font-mono font-bold px-1.5 py-0.5 rounded border border-gray-200 uppercase tracking-widest">
+                              REVIEWED
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Bento-like details grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-1.5 text-[11px] font-mono text-gray-600">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-luxury-gold font-bold">TEL:</span>
+                            <a href={`tel:${inq.phoneNumber}`} className="hover:text-imperial-red transition-colors font-bold underline decoration-dotted">
+                              {inq.phoneNumber}
+                            </a>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-luxury-gold font-bold">SOC:</span>
+                            <span className="font-bold text-gray-800 truncate max-w-[150px]" title={inq.socials}>{inq.socials}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-luxury-gold font-bold">AGE:</span>
+                            <span>{inq.age} Years Old</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-luxury-gold font-bold">OCC:</span>
+                            <span className="uppercase text-gray-800 font-bold">{inq.occupancy}</span>
+                          </div>
+                        </div>
+
+                        <div className="text-[9px] font-mono text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                          <Clock size={10} />
+                          <span>SUBMITTED AT // {new Date(inq.submittedAt).toLocaleString()}</span>
+                        </div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-2 w-full md:w-auto pt-2 md:pt-0 border-t border-gray-100 md:border-0 justify-end">
+                        {inq.isNew && (
+                          <button
+                            onClick={() => markInquiryAsRead(inq.id)}
+                            className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-500 hover:text-white border border-emerald-300 hover:border-emerald-500 text-emerald-700 font-mono text-[9px] uppercase font-bold tracking-widest cursor-pointer transition-all flex items-center gap-1"
+                          >
+                            <Check size={10} /> MARK_REVIEWED()
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            if (window.confirm('Are you sure you want to delete this inquiry?')) {
+                              deleteInquiry(inq.id);
+                              setFormSuccessMsg('Inquiry deleted successfully.');
+                              setTimeout(() => setFormSuccessMsg(''), 3000);
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-rose-50 hover:bg-rose-600 hover:text-white border border-rose-300 hover:border-rose-600 text-rose-700 font-mono text-[9px] uppercase font-bold tracking-widest cursor-pointer transition-all flex items-center gap-1"
+                        >
+                          <Trash2 size={10} /> DELETE()
+                        </button>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   );
 }
 
 // Subcomponents
-function TabButton({ active, onClick, icon: Icon, label }: { active: boolean, onClick: () => void, icon: any, label: string }) {
+function TabButton({ active, onClick, icon: Icon, label, badgeCount }: { active: boolean, onClick: () => void, icon: any, label: string, badgeCount?: number }) {
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-3 font-mono text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 transition-all duration-300 ${
+      className={`px-6 py-3 font-mono text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 transition-all duration-300 relative ${
         active 
           ? 'bg-imperial-red/5 text-imperial-red border border-imperial-red' 
           : 'text-gray-500 hover:text-[#1a1a1a] border border-transparent'
@@ -888,6 +1038,11 @@ function TabButton({ active, onClick, icon: Icon, label }: { active: boolean, on
     >
       <Icon size={14} />
       <span>{label}</span>
+      {badgeCount !== undefined && badgeCount > 0 && (
+        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-imperial-red text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-white flex items-center justify-center animate-pulse">
+          {badgeCount}
+        </span>
+      )}
     </button>
   );
 }

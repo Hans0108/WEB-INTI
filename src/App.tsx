@@ -6,6 +6,7 @@ import About from './pages/About';
 import Magazine from './pages/Magazine';
 import ArticleView from './pages/ArticleView';
 import Admin from './pages/Admin';
+import Join from './pages/Join';
 import ScrollProgress from './components/ScrollProgress';
 import CustomCursor from './components/CustomCursor';
 
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/magazine" element={<Magazine />} />
             <Route path="/magazine/article/:id" element={<ArticleView />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/join" element={<Join />} />
           </Routes>
         </main>
         <Footer />

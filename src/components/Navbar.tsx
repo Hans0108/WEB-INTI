@@ -35,13 +35,15 @@ export default function Navbar() {
             <NavLink to="/">Home</NavLink>
             <NavLink to="/about">About Us</NavLink>
             <NavLink to="/magazine">Magazine</NavLink>
-            <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 py-2.5 bg-[#111] hover:bg-imperial-red text-white font-mono text-[9px] uppercase tracking-widest font-bold border border-transparent hover:tech-glow hover:border-luxury-gold/30 transition-all duration-300 cursor-pointer"
-            >
-              SYS.JOIN()
-            </motion.button>
+            <Link to="/join">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 py-2.5 bg-[#111] hover:bg-imperial-red text-white font-mono text-[9px] uppercase tracking-widest font-bold border border-transparent hover:tech-glow hover:border-luxury-gold/30 transition-all duration-300 cursor-pointer"
+              >
+                Join INTI
+              </motion.button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -63,9 +65,11 @@ export default function Navbar() {
           <MobileNavLink to="/" onClick={() => setIsOpen(false)}>Home</MobileNavLink>
           <MobileNavLink to="/about" onClick={() => setIsOpen(false)}>About Us</MobileNavLink>
           <MobileNavLink to="/magazine" onClick={() => setIsOpen(false)}>Magazine</MobileNavLink>
-          <button className="w-full px-6 py-3 bg-[#111] text-white font-mono text-[10px] uppercase tracking-widest font-bold border border-luxury-gold/30 hover:bg-imperial-red transition-all mt-4 cursor-pointer">
-            SYS.JOIN()
-          </button>
+          <Link to="/join" onClick={() => setIsOpen(false)} className="block">
+            <button className="w-full px-6 py-3 bg-[#111] text-white font-mono text-[10px] uppercase tracking-widest font-bold border border-luxury-gold/30 hover:bg-imperial-red transition-all mt-4 cursor-pointer">
+              Join INTI
+            </button>
+          </Link>
         </motion.div>
       )}
     </motion.nav>

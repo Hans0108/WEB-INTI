@@ -14,6 +14,17 @@ export interface WebsiteImages {
   showHomeHeroImg: boolean;
 }
 
+export interface Inquiry {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  socials: string;
+  age: number;
+  occupancy: string;
+  submittedAt: string;
+  isNew: boolean;
+}
+
 const DEFAULT_LEADERS: Leader[] = [
   { id: 1, name: 'Budi Santoso', role: 'Chairman', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
   { id: 2, name: 'Diana Wijaya', role: 'Vice Chairman', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' },
@@ -34,6 +45,7 @@ const listeners = new Set<Listener>();
 let articles: ContentItem[] = [];
 let leaders: Leader[] = [];
 let websiteImages: WebsiteImages = DEFAULT_WEBSITE_IMAGES;
+let inquiries: Inquiry[] = [];
 
 // Initialize
 if (typeof window !== 'undefined') {
@@ -45,6 +57,9 @@ if (typeof window !== 'undefined') {
 
   const savedImages = localStorage.getItem('inti_website_images');
   websiteImages = savedImages ? JSON.parse(savedImages) : DEFAULT_WEBSITE_IMAGES;
+
+  const savedInquiries = localStorage.getItem('inti_inquiries');
+  inquiries = savedInquiries ? JSON.parse(savedInquiries) : [];
 }
 
 const notify = () => {
@@ -110,6 +125,44 @@ export const store = {
     notify();
   },
 
+  getInquiries() {
+    return inquiries;
+  },
+
+  saveInquiries(newInquiries: Inquiry[]) {
+    inquiries = newInquiries;
+    localStorage.setItem('inti_inquiries', JSON.stringify(newInquiries));
+    notify();
+  },
+
+  addInquiry(inquiry: Omit<Inquiry, 'id' | 'submittedAt' | 'isNew'>) {
+    const newId = inquiries.length > 0 ? Math.max(...inquiries.map(i => i.id)) + 1 : 1;
+    const item: Inquiry = {
+      ...inquiry,
+      id: newId,
+      submittedAt: new Date().toISOString(),
+      isNew: true
+    };
+    const updated = [item, ...inquiries];
+    this.saveInquiries(updated);
+    return item;
+  },
+
+  markInquiryAsRead(id: number) {
+    const updated = inquiries.map(i => i.id === id ? { ...i, isNew: false } : i);
+    this.saveInquiries(updated);
+  },
+
+  markAllInquiriesAsRead() {
+    const updated = inquiries.map(i => ({ ...i, isNew: false }));
+    this.saveInquiries(updated);
+  },
+
+  deleteInquiry(id: number) {
+    const updated = inquiries.filter(i => i.id !== id);
+    this.saveInquiries(updated);
+  },
+
   subscribe(listener: Listener) {
     listeners.add(listener);
     return () => {
@@ -122,7 +175,8 @@ export function useStore() {
   const [state, setState] = useState({
     articles: store.getArticles(),
     leaders: store.getLeaders(),
-    websiteImages: store.getWebsiteImages()
+    websiteImages: store.getWebsiteImages(),
+    inquiries: store.getInquiries()
   });
 
   useEffect(() => {
@@ -130,7 +184,8 @@ export function useStore() {
       setState({
         articles: store.getArticles(),
         leaders: store.getLeaders(),
-        websiteImages: store.getWebsiteImages()
+        websiteImages: store.getWebsiteImages(),
+        inquiries: store.getInquiries()
       });
     });
     return unsubscribe;
@@ -140,19 +195,26 @@ export function useStore() {
     articles: state.articles,
     leaders: state.leaders,
     websiteImages: state.websiteImages,
+    inquiries: state.inquiries,
     addArticle: (art: Omit<ContentItem, 'id'>) => store.addArticle(art),
     deleteArticle: (id: number) => store.deleteArticle(id),
     updateArticle: (id: number, updatedArt: Partial<ContentItem>) => store.updateArticle(id, updatedArt),
     updateLeaderImage: (id: number, img: string) => store.updateLeaderImage(id, img),
     updateLeaderDetails: (id: number, name: string, role: string, img: string) => store.updateLeaderDetails(id, name, role, img),
     updateWebsiteImages: (images: WebsiteImages) => store.saveWebsiteImages(images),
+    addInquiry: (inq: Omit<Inquiry, 'id' | 'submittedAt' | 'isNew'>) => store.addInquiry(inq),
+    markInquiryAsRead: (id: number) => store.markInquiryAsRead(id),
+    markAllInquiriesAsRead: () => store.markAllInquiriesAsRead(),
+    deleteInquiry: (id: number) => store.deleteInquiry(id),
     resetToDefault: () => {
       localStorage.removeItem('inti_articles');
       localStorage.removeItem('inti_leaders');
       localStorage.removeItem('inti_website_images');
+      localStorage.removeItem('inti_inquiries');
       articles = initialContentData;
       leaders = DEFAULT_LEADERS;
       websiteImages = DEFAULT_WEBSITE_IMAGES;
+      inquiries = [];
       notify();
     }
   };
