@@ -116,8 +116,8 @@ export default function Home() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full pt-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            {/* Left Column: Text & CTAs */}
-            <div className="lg:col-span-7">
+            {/* Left Column: Text & CTAs (Appears second/last on mobile, first on desktop) */}
+            <div className="lg:col-span-7 order-2 lg:order-1">
               <motion.div 
                 className="max-w-3xl"
                 variants={heroContainerVariants}
@@ -173,9 +173,9 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Right Column: Super Fancy Animated Logo */}
+            {/* Right Column: Super Fancy Animated Logo (Appears first on mobile, last on desktop) */}
             <motion.div 
-              className="lg:col-span-5 flex justify-center items-center relative z-20"
+              className="lg:col-span-5 flex justify-center items-center relative z-20 order-1 lg:order-2"
               initial={{ opacity: 0, scale: 0.75, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ 
